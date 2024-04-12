@@ -1,0 +1,13 @@
+/* styles.css */
+body {
+    font-family: Arial, sans-serif;
+}
+#uuidSelect, #logDisplay {
+    margin-top: 20px;
+}
+#logDisplay {
+    border: 1px solid #ccc;
+    padding: 10px;
+    height: 300px;
+    overflow-y: scroll;
+}
