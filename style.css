@@ -1,4 +1,3 @@
-/* styles.css */
 body {
     font-family: Arial, sans-serif;
 }
@@ -10,4 +9,16 @@ body {
     padding: 10px;
     height: 300px;
     overflow-y: scroll;
+}
+#dropZone {
+    margin-top: 20px;
+    height: 100px;
+    border: 2px dashed #ccc;
+    padding: 20px;
+    text-align: center;
+    color: #ccc;
+}
+#dropZone.dragover {
+    border-color: #000;
+    color: #000;
 }
