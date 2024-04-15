@@ -137,7 +137,7 @@ function parseLogFile(content) {
     });
 
     updateUUIDSelect(Object.keys(uuidMap));
-    document.getElementById('uuidCountDisplay').textContent = Object.keys(uuidMap).length;
+    document.getElementById('uuidCount').textContent = Object.keys(uuidMap).length;
     document.getElementById('uuidSelect').addEventListener('change', function () {
         const selectedUUID = this.value;
         allLines = uuidMap[selectedUUID];
