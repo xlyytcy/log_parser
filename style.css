@@ -20,6 +20,12 @@ body {
     grid-gap: 1px;
 }
 
+@media (max-width: 600px) {
+    #logDisplay {
+        grid-template-columns: 1fr 1fr 1fr 2fr 1fr 1fr;
+    }
+}
+
 .log-header,
 .log-row {
     display: contents;
