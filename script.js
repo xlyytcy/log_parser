@@ -56,6 +56,7 @@ function parseLogFile(content) {
     });
 
     updateUUIDSelect(Object.keys(uuidMap));
+    document.getElementById('uuidCountDisplay').textContent = `Number of UUIDs: ${Object.keys(uuidMap).length}`;
     document.getElementById('uuidSelect').addEventListener('change', function() {
         const selectedUUID = this.value;
         displayLogLines(uuidMap[selectedUUID]);
