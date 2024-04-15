@@ -122,7 +122,10 @@ function selectLineForJson(line, index) {
     if (isJsonString(jsonPart)) {
         jsonBeautifyBtn.disabled = false;
         jsonBeautifyBtn.onclick = () => {
-            beautifyJson(jsonPart, index);
+            const json = JSON.parse(jsonPart);
+            const prettyJson = JSON.stringify(json, null, 4);
+            currentLines[index] = currentLines[index].replace(jsonPart, prettyJson);
+            displayLogLines(currentLines); // Redisplay all lines with the beautified JSON in place
         };
     } else {
         jsonBeautifyBtn.disabled = true;
