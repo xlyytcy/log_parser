@@ -100,7 +100,12 @@ function displayLogLines(lines) {
 function filterLogsByLevel() {
     const selectedLevel = logLevelSelect.value;
     if (selectedLevel) {
-        currentLines = allLines.filter(line => line.includes(`|${selectedLevel}|`));
+        const levels = ['trace', 'debug', 'info', 'warn', 'err', 'critical'];
+        const minLevelIndex = levels.indexOf(selectedLevel);
+        currentLines = allLines.filter(line => {
+            const logLevel = line.split('|')[1].trim();
+            return levels.indexOf(logLevel) >= minLevelIndex;
+        });
     } else {
         currentLines = allLines.slice(); // No filter applied, clone all lines
     }
