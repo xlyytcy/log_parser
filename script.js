@@ -11,18 +11,18 @@ dropZone.addEventListener('click', () => logFileInput.click());
 logFileInput.addEventListener('change', handleFileSelect, false);
 filterLogLevelBtn.addEventListener('click', filterLogsByLevel);
 
-dropZone.addEventListener('dragover', function(event) {
+dropZone.addEventListener('dragover', function (event) {
     event.stopPropagation();
     event.preventDefault();
     event.dataTransfer.dropEffect = 'copy';
     dropZone.classList.add('dragover');
 });
 
-dropZone.addEventListener('dragleave', function(event) {
+dropZone.addEventListener('dragleave', function (event) {
     dropZone.classList.remove('dragover');
 });
 
-dropZone.addEventListener('drop', function(event) {
+dropZone.addEventListener('drop', function (event) {
     event.stopPropagation();
     event.preventDefault();
     dropZone.classList.remove('dragover');
@@ -30,6 +30,24 @@ dropZone.addEventListener('drop', function(event) {
     if (files.length > 0) {
         handleFileSelect({ target: { files: files } });
     }
+});
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    const jsonBeautifyBtn = document.getElementById('jsonBeautifyBtn'); // Replace 'jsonBeautifyBtn' with the actual ID of your button
+
+    jsonBeautifyBtn.onclick = () => {
+        currentLines = currentLines.map(line => {
+            const jsonPart = line.split('|')[3].replace('Stringified input: ', '').trim();
+            if (isJsonString(jsonPart)) {
+                const json = JSON.parse(jsonPart);
+                const prettyJson = JSON.stringify(json, null, 4);
+                return line.replace(jsonPart, prettyJson);
+            } else {
+                return line;
+            }
+        });
+        displayLogLines(currentLines); // Redisplay all lines with the beautified JSON in place
+    };
 });
 
 function handleFileSelect(event) {
@@ -40,7 +58,7 @@ function handleFileSelect(event) {
     document.getElementById('fileNameDisplay').textContent = `Selected file: ${file.name}`;
 
     const reader = new FileReader();
-    reader.onload = function(fileEvent) {
+    reader.onload = function (fileEvent) {
         const content = fileEvent.target.result;
         parseLogFile(content);
     };
@@ -64,12 +82,12 @@ function parseLogFile(content) {
 
     updateUUIDSelect(Object.keys(uuidMap));
     document.getElementById('uuidCountDisplay').textContent = `Number of UUIDs: ${Object.keys(uuidMap).length}`;
-    document.getElementById('uuidSelect').addEventListener('change', function() {
+    document.getElementById('uuidSelect').addEventListener('change', function () {
         const selectedUUID = this.value;
         allLines = uuidMap[selectedUUID];
         currentLines = allLines.slice(); // Clone all lines
         displayLogLines(currentLines);
-        jsonBeautifyBtn.disabled = true; // Disable beautify button by default
+        // jsonBeautifyBtn.disabled = true; // Disable beautify button by default
         jsonBeautifyBtn.onclick = null; // Clear previous click handlers
     });
 }
@@ -94,10 +112,10 @@ function displayLogLines(lines) {
         p.textContent = line;
         p.style.color = getColorForLogLevel(logLevel);
         display.appendChild(p);
-        p.onclick = () => {
-            selectedIndex = index;
-            selectLineForJson(line, index);
-        };
+        // p.onclick = () => {
+        //     selectedIndex = index;
+        //     selectLineForJson(line, index);
+        // };
     });
 }
 
@@ -122,13 +140,17 @@ function selectLineForJson(line, index) {
     if (isJsonString(jsonPart)) {
         jsonBeautifyBtn.disabled = false;
         jsonBeautifyBtn.onclick = () => {
-            const json = JSON.parse(jsonPart);
-            const prettyJson = JSON.stringify(json, null, 4);
-            const pre = document.createElement('pre');
-            pre.textContent = prettyJson;
-            const p = document.querySelector(`#logDisplay p:nth-child(${index + 1})`);
-            p.textContent = p.textContent.replace(jsonPart, '');
-            p.appendChild(pre);
+            currentLines = currentLines.map(line => {
+                const jsonPart = line.split('|')[3].replace('Stringified input: ', '').trim();
+                if (isJsonString(jsonPart)) {
+                    const json = JSON.parse(jsonPart);
+                    const prettyJson = JSON.stringify(json, null, 4);
+                    return line.replace(jsonPart, prettyJson);
+                } else {
+                    return line;
+                }
+            });
+            displayLogLines(currentLines); // Redisplay all lines with the beautified JSON in place
         };
     } else {
         jsonBeautifyBtn.disabled = true;
