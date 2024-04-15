@@ -10,17 +10,19 @@
     <input type="file" id="logFileInput" accept=".txt, .log" style="display: none;">
     <p id="fileNameDisplay">No file selected</p>
     <p id="uuidCountDisplay"></p>
-    <select id="logLevelSelect">
-        <option value="">Filter by Log Level</option>
-        <option value="trace">Trace</option>
-        <option value="debug">Debug</option>
-        <option value="info">Info</option>
-        <option value="warn">Warn</option>
-        <option value="err">Error</option>
-        <option value="critical">Critical</option>
-        <option value="off">Off</option>
-    </select>
-    <button id="filterLogLevelBtn">Filter Logs</button>
+    <div id="filterContainer"> 
+        <select id="logLevelSelect">
+            <option value="">Filter by Log Level</option>
+            <option value="trace">Trace</option>
+            <option value="debug">Debug</option>
+            <option value="info">Info</option>
+            <option value="warn">Warn</option>
+            <option value="err">Error</option>
+            <option value="critical">Critical</option>
+            <option value="off">Off</option>
+        </select>
+        <button id="filterLogLevelBtn">Filter Logs</button>
+    </div>
     <button id="jsonBeautifyBtn">Beautify JSON</button>
     <select id="uuidSelect">
         <option value="">Select UUID</option>
