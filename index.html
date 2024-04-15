@@ -8,13 +8,13 @@
 <body>
     <div id="dropZone">Drag and drop your log file here or click to select a file.</div>
     <input type="file" id="logFileInput" accept=".txt, .log" style="display: none;">
-    <p id="fileNameDisplay" style="margin-top: 10px;">No file selected</p>
-    <p id="uuidCountDisplay" style="margin-top: 5px;"></p>
+    <p id="fileNameDisplay">No file selected</p>
+    <p id="uuidCountDisplay"></p>
+    <button id="jsonBeautifyBtn" disabled>Beautify JSON</button>
     <select id="uuidSelect">
         <option value="">Select UUID</option>
     </select>
     <div id="logDisplay"></div>
-    <button id="jsonBeautifyBtn" disabled>Beautify JSON</button>
     <script src="script.js"></script>
 </body>
 </html>
