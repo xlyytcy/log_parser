@@ -1,5 +1,7 @@
 const logFileInput = document.getElementById('logFileInput');
 const dropZone = document.getElementById('dropZone');
+const jsonBeautifyBtn = document.getElementById('jsonBeautifyBtn');
+let currentJsonString = ''; // To store the currently displayed JSON string
 
 dropZone.addEventListener('click', () => logFileInput.click());
 logFileInput.addEventListener('change', handleFileSelect, false);
@@ -59,7 +61,10 @@ function parseLogFile(content) {
     document.getElementById('uuidCountDisplay').textContent = `Number of UUIDs: ${Object.keys(uuidMap).length}`;
     document.getElementById('uuidSelect').addEventListener('change', function() {
         const selectedUUID = this.value;
-        displayLogLines(uuidMap[selectedUUID]);
+        const lines = uuidMap[selectedUUID];
+        displayLogLines(lines);
+        jsonBeautifyBtn.disabled = true; // Disable beautify button by default
+        jsonBeautifyBtn.onclick = null; // Clear previous click handlers
     });
 }
 
@@ -83,7 +88,36 @@ function displayLogLines(lines) {
         p.textContent = line;
         p.style.color = getColorForLogLevel(logLevel);
         display.appendChild(p);
+        p.onclick = () => selectLineForJson(line);
     });
+}
+
+function selectLineForJson(line) {
+    const jsonPart = line.split('|')[3].replace('Stringified input: ', '').trim();
+    if (isJsonString(jsonPart)) {
+        currentJsonString = jsonPart;
+        jsonBeautifyBtn.disabled = false;
+        jsonBeautifyBtn.onclick = () => beautifyJson(currentJsonString);
+    } else {
+        jsonBeautifyBtn.disabled = true;
+        jsonBeautifyBtn.onclick = null;
+    }
+}
+
+function isJsonString(str) {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+}
+
+function beautifyJson(jsonString) {
+    const json = JSON.parse(jsonString);
+    const prettyJson = JSON.stringify(json, null, 4);
+    const display = document.getElementById('logDisplay');
+    display.innerHTML = `<pre>${prettyJson}</pre>`;
 }
 
 function getColorForLogLevel(logLevel) {
