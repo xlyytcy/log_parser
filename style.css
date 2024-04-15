@@ -10,12 +10,28 @@ body {
 #logDisplay {
     border: 1px solid #ccc;
     padding: 10px;
-    height: calc(90vh - 150px); /* Adjusting height based on new interface layout */
+    height: calc(90vh - 150px);
     overflow-y: auto;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr); /* Adjust number of columns based on your log structure */
+    grid-gap: 5px;
+}
+.log-header, .log-row {
+    display: contents;
+}
+.log-header p, .log-row p {
+    margin: 0;
+    padding: 5px;
+    text-align: left;
+    border-bottom: 1px solid #ccc;
+}
+.log-header p {
+    font-weight: bold;
+    background-color: #f3f3f3;
 }
 #dropZone {
     margin-top: 20px;
-    height: 50px; /* Reduced height */
+    height: 50px;
     border: 2px dashed #ccc;
     padding: 10px;
     text-align: center;
@@ -25,11 +41,11 @@ body {
     border-color: #000;
     color: #000;
 }
-#fileNameDisplay, #uuidCountDisplay, #jsonBeautifyBtn {
+#fileNameDisplay, #uuidCountDisplay, #jsonBeautifyBtn, #filterLogLevelBtn {
     margin-top: 10px;
-    display: block; /* Ensures that each element is on a new line */
+    display: block;
 }
-#jsonBeautifyBtn {
+#jsonBeautifyBtn, #filterLogLevelBtn {
     font-size: 1em;
     padding: 5px 10px;
     color: #fff;
@@ -38,7 +54,7 @@ body {
     cursor: pointer;
     outline: none;
 }
-#jsonBeautifyBtn:disabled {
+#jsonBeautifyBtn:disabled, #filterLogLevelBtn:disabled {
     background-color: #ccc;
     cursor: default;
 }

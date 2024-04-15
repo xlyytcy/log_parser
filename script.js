@@ -32,23 +32,80 @@ dropZone.addEventListener('drop', function (event) {
     }
 });
 
-document.addEventListener('DOMContentLoaded', (event) => {
-    const jsonBeautifyBtn = document.getElementById('jsonBeautifyBtn'); // Replace 'jsonBeautifyBtn' with the actual ID of your button
-
-    jsonBeautifyBtn.onclick = () => {
-        currentLines = currentLines.map(line => {
-            const jsonPart = line.split('|')[3].replace('Stringified input: ', '').trim();
-            if (isJsonString(jsonPart)) {
-                const json = JSON.parse(jsonPart);
-                const prettyJson = JSON.stringify(json, null, 4);
-                return line.replace(jsonPart, prettyJson);
-            } else {
-                return line;
-            }
-        });
-        displayLogLines(currentLines); // Redisplay all lines with the beautified JSON in place
-    };
+document.addEventListener('DOMContentLoaded', () => {
+    const logDisplay = document.getElementById('logDisplay');
+    createLogHeader(logDisplay);
 });
+
+function createLogHeader(display) {
+    const headerTitles = ["Timestamp", "Level", "Source", "Message", "Step ID", "Custom String"];
+    const header = document.createElement('div');
+    header.classList.add('log-header');
+    headerTitles.forEach(title => {
+        const cell = document.createElement('p');
+        cell.textContent = title;
+        header.appendChild(cell);
+    });
+    display.appendChild(header);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const jsonBeautifyBtn = document.getElementById('jsonBeautifyBtn');
+    jsonBeautifyBtn.addEventListener('click', beautifyJsonInGrid);
+});
+
+function beautifyJsonInGrid() {
+    const logDisplay = document.getElementById('logDisplay');
+    const logRows = logDisplay.getElementsByClassName('log-row');
+    Array.from(logRows).forEach(row => {
+        const messageCell = row.children[3]; // Assuming the JSON string is in the "Message" column
+        const jsonPart = messageCell.textContent.replace('Stringified input: ', '').trim();
+        if (isJsonString(jsonPart)) {
+            const json = JSON.parse(jsonPart);
+            const prettyJson = JSON.stringify(json, null, 4);
+            const pre = document.createElement('pre');
+            pre.style.whiteSpace = 'pre-wrap';
+            pre.textContent = prettyJson;
+            messageCell.innerHTML = ''; // Clear the existing content
+            messageCell.appendChild(pre); // Insert beautified JSON
+        }
+    });
+}
+
+function displayLogLines(lines) {
+    const display = document.getElementById('logDisplay');
+    display.innerHTML = ''; // Clear previous display
+    createLogHeader(display); // Add header row
+    lines.forEach((line, index) => {
+        const parts = line.split('|');
+        const row = document.createElement('div');
+        row.classList.add('log-row');
+        parts.forEach((part, idx) => {
+            const cell = document.createElement('p');
+            if (idx === 3 && isJsonString(part.replace('Stringified input: ', '').trim())) { // For JSON part
+                const jsonPart = part.replace('Stringified input: ', '').trim();
+                const pre = document.createElement('pre');
+                pre.textContent = jsonPart;
+                cell.appendChild(pre);
+            } else {
+                cell.textContent = part.trim();
+            }
+            cell.style.color = getColorForLogLevel(parts[1].trim()); // Color based on log level
+            row.appendChild(cell);
+        });
+        display.appendChild(row);
+    });
+}
+
+function isJsonString(str) {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+}
+
 
 function handleFileSelect(event) {
     const file = event.target.files[0];
@@ -104,20 +161,18 @@ function updateUUIDSelect(uuids) {
 function displayLogLines(lines) {
     const display = document.getElementById('logDisplay');
     display.innerHTML = ''; // Clear previous display
-    lines.forEach((line, index) => {
-        const logLevel = line.split('|')[1].trim();
-        const p = document.createElement('p');
-        const jsonPart = line.split('|')[3].replace('Stringified input: ', '').trim();
-        if (isJsonString(jsonPart)) {
-            const pre = document.createElement('pre');
-            pre.textContent = jsonPart;
-            p.textContent = line.replace(jsonPart, '');
-            p.appendChild(pre);
-        } else {
-            p.textContent = line;
-        }
-        p.style.color = getColorForLogLevel(logLevel);
-        display.appendChild(p);
+    createLogHeader(display); // Add header row
+    lines.forEach((line) => {
+        const parts = line.split('|');
+        const row = document.createElement('div');
+        row.classList.add('log-row');
+        parts.forEach(part => {
+            const cell = document.createElement('p');
+            cell.textContent = part.trim();
+            cell.style.color = getColorForLogLevel(parts[1].trim()); // Color based on log level
+            row.appendChild(cell);
+        });
+        display.appendChild(row);
     });
 }
 
@@ -134,29 +189,6 @@ function filterLogsByLevel() {
         currentLines = allLines.slice(); // No filter applied, clone all lines
     }
     displayLogLines(currentLines);
-}
-
-function selectLineForJson(line, index) {
-    const jsonPart = line.split('|')[3].replace('Stringified input: ', '').trim();
-    if (isJsonString(jsonPart)) {
-        jsonBeautifyBtn.disabled = false;
-        jsonBeautifyBtn.onclick = () => {
-            currentLines = currentLines.map(line => {
-                const jsonPart = line.split('|')[3].replace('Stringified input: ', '').trim();
-                if (isJsonString(jsonPart)) {
-                    const json = JSON.parse(jsonPart);
-                    const prettyJson = JSON.stringify(json, null, 4);
-                    return line.replace(jsonPart, prettyJson);
-                } else {
-                    return line;
-                }
-            });
-            displayLogLines(currentLines); // Redisplay all lines with the beautified JSON in place
-        };
-    } else {
-        jsonBeautifyBtn.disabled = true;
-        jsonBeautifyBtn.onclick = null;
-    }
 }
 
 function beautifyJson(jsonString, index) {
