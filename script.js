@@ -124,8 +124,11 @@ function selectLineForJson(line, index) {
         jsonBeautifyBtn.onclick = () => {
             const json = JSON.parse(jsonPart);
             const prettyJson = JSON.stringify(json, null, 4);
-            currentLines[index] = currentLines[index].replace(jsonPart, prettyJson);
-            displayLogLines(currentLines); // Redisplay all lines with the beautified JSON in place
+            const pre = document.createElement('pre');
+            pre.textContent = prettyJson;
+            const p = document.querySelector(`#logDisplay p:nth-child(${index + 1})`);
+            p.textContent = p.textContent.replace(jsonPart, '');
+            p.appendChild(pre);
         };
     } else {
         jsonBeautifyBtn.disabled = true;
