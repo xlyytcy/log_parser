@@ -1,8 +1,8 @@
 const logFileInput = document.getElementById('logFileInput');
 const dropZone = document.getElementById('dropZone');
 const jsonBeautifyBtn = document.getElementById('jsonBeautifyBtn');
-let currentJsonString = ''; // To store the currently displayed JSON string
 let currentLines = []; // To store the current log lines
+let selectedIndex = -1; // To keep track of selected line index for JSON
 
 dropZone.addEventListener('click', () => logFileInput.click());
 logFileInput.addEventListener('change', handleFileSelect, false);
@@ -83,38 +83,34 @@ function updateUUIDSelect(uuids) {
 function displayLogLines(lines) {
     const display = document.getElementById('logDisplay');
     display.innerHTML = ''; // Clear previous display
-    lines.forEach(line => {
+    lines.forEach((line, index) => {
         const p = document.createElement('p');
         const logLevel = line.split('|')[1].trim();
         p.textContent = line;
         p.style.color = getColorForLogLevel(logLevel);
         display.appendChild(p);
-        p.onclick = () => selectLineForJson(line, lines);
+        p.onclick = () => selectLineForJson(line, index);
     });
 }
 
-function selectLineForJson(line, lines) {
+function selectLineForJson(line, index) {
     const jsonPart = line.split('|')[3].replace('Stringified input: ', '').trim();
     if (isJsonString(jsonPart)) {
-        currentJsonString = jsonPart;
         jsonBeautifyBtn.disabled = false;
-        jsonBeautifyBtn.onclick = () => beautifyJson(currentJsonString, lines);
+        jsonBeautifyBtn.onclick = () => {
+            beautifyJson(jsonPart, index);
+        };
     } else {
         jsonBeautifyBtn.disabled = true;
         jsonBeautifyBtn.onclick = null;
     }
 }
 
-function beautifyJson(jsonString, lines) {
+function beautifyJson(jsonString, index) {
     const json = JSON.parse(jsonString);
     const prettyJson = JSON.stringify(json, null, 4);
-    displayLogLines(lines); // Redisplay all lines
-    const display = document.getElementById('logDisplay');
-    const jsonDisplay = document.createElement('pre');
-    jsonDisplay.textContent = prettyJson;
-    jsonDisplay.style.color = '#4CAF50'; // Green color for JSON
-    jsonDisplay.style.fontWeight = 'bold';
-    display.appendChild(jsonDisplay);
+    currentLines[index] = currentLines[index].replace(jsonString, prettyJson);
+    displayLogLines(currentLines); // Redisplay all lines with the beautified JSON in place
 }
 
 function isJsonString(str) {
