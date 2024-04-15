@@ -43,6 +43,7 @@ body {
 .log-header p {
     font-weight: bold;
     background-color: #f3f3f3;
+    height: 30px;
 }
 
 #dropZone {
@@ -90,4 +91,8 @@ body {
 #filterLogLevelBtn:disabled {
     background-color: #ccc;
     cursor: default;
+}
+
+#timeSpent {
+    margin-left: 10px;
 }

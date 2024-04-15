@@ -6,6 +6,7 @@ const filterLogLevelBtn = document.getElementById('filterLogLevelBtn');
 let currentLines = []; // To store the current log lines
 let allLines = []; // To store all lines for current UUID
 let selectedIndex = -1; // Index of the selected line for JSON beautification
+let uuidTimestamps = {}; // To store the first and last timestamp for each UUID
 
 dropZone.addEventListener('click', () => logFileInput.click());
 logFileInput.addEventListener('change', handleFileSelect, false);
@@ -129,10 +130,18 @@ function parseLogFile(content) {
         const parts = line.split('|');
         if (parts.length > 4) {
             const uuid = parts[4].trim();
+            const timestamp = parseInt(parts[0].trim());
             if (!uuidMap[uuid]) {
                 uuidMap[uuid] = [];
+                uuidTimestamps[uuid] = { first: timestamp, last: timestamp };
             }
             uuidMap[uuid].push(line);
+            if (timestamp < uuidTimestamps[uuid].first) {
+                uuidTimestamps[uuid].first = timestamp;
+            }
+            if (timestamp > uuidTimestamps[uuid].last) {
+                uuidTimestamps[uuid].last = timestamp;
+            }
         }
     });
 
@@ -143,8 +152,25 @@ function parseLogFile(content) {
         allLines = uuidMap[selectedUUID];
         currentLines = allLines.slice(); // Clone all lines
         displayLogLines(currentLines);
+        displayTimeSpent(uuidTimestamps[selectedUUID]); // Display time spent
     });
 }
+
+function displayTimeSpent(timestamps) {
+    const timeSpentMs = timestamps.last - timestamps.first;
+    const minutes = Math.floor(timeSpentMs / 60000);
+    const seconds = ((timeSpentMs % 60000) / 1000).toFixed(0);
+    const milliseconds = timeSpentMs % 1000;
+    const timeSpentField = document.getElementById('timeSpent');
+    timeSpentField.textContent = `Time spent: ${minutes}:${seconds}:${milliseconds}`;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const timeSpentField = document.createElement('p');
+    timeSpentField.id = 'timeSpent';
+    timeSpentField.style.fontWeight = 'bold';
+    document.body.insertBefore(timeSpentField, document.getElementById('logDisplay'));
+});
 
 function updateUUIDSelect(uuids) {
     const select = document.getElementById('uuidSelect');
