@@ -1,11 +1,14 @@
 const logFileInput = document.getElementById('logFileInput');
 const dropZone = document.getElementById('dropZone');
 const jsonBeautifyBtn = document.getElementById('jsonBeautifyBtn');
+const logLevelSelect = document.getElementById('logLevelSelect');
+const filterLogLevelBtn = document.getElementById('filterLogLevelBtn');
 let currentLines = []; // To store the current log lines
-let selectedIndex = -1; // To keep track of selected line index for JSON
+let allLines = []; // To store all lines for current UUID
 
 dropZone.addEventListener('click', () => logFileInput.click());
 logFileInput.addEventListener('change', handleFileSelect, false);
+filterLogLevelBtn.addEventListener('click', filterLogsByLevel);
 
 dropZone.addEventListener('dragover', function(event) {
     event.stopPropagation();
@@ -62,7 +65,8 @@ function parseLogFile(content) {
     document.getElementById('uuidCountDisplay').textContent = `Number of UUIDs: ${Object.keys(uuidMap).length}`;
     document.getElementById('uuidSelect').addEventListener('change', function() {
         const selectedUUID = this.value;
-        currentLines = uuidMap[selectedUUID];
+        allLines = uuidMap[selectedUUID];
+        currentLines = allLines.slice(); // Clone all lines
         displayLogLines(currentLines);
         jsonBeautifyBtn.disabled = true; // Disable beautify button by default
         jsonBeautifyBtn.onclick = null; // Clear previous click handlers
@@ -93,12 +97,22 @@ function displayLogLines(lines) {
     });
 }
 
+function filterLogsByLevel() {
+    const selectedLevel = logLevelSelect.value;
+    if (selectedLevel) {
+        currentLines = allLines.filter(line => line.includes(`|${selectedLevel}|`));
+    } else {
+        currentLines = allLines.slice(); // No filter applied, clone all lines
+    }
+    displayLogLines(currentLines);
+}
+
 function selectLineForJson(line, index) {
     const jsonPart = line.split('|')[3].replace('Stringified input: ', '').trim();
     if (isJsonString(jsonPart)) {
         jsonBeautifyBtn.disabled = false;
         jsonBeautifyBtn.onclick = () => {
-            beautifyJson(jsonPart, index);
+            beautifyJson(jsonPart);
         };
     } else {
         jsonBeautifyBtn.disabled = true;
@@ -106,11 +120,11 @@ function selectLineForJson(line, index) {
     }
 }
 
-function beautifyJson(jsonString, index) {
+function beautifyJson(jsonString) {
     const json = JSON.parse(jsonString);
     const prettyJson = JSON.stringify(json, null, 4);
-    currentLines[index] = currentLines[index].replace(jsonString, prettyJson);
-    displayLogLines(currentLines); // Redisplay all lines with the beautified JSON in place
+    const display = document.getElementById('logDisplay');
+    display.innerHTML = `<pre style="white-space: pre-wrap; color: #4CAF50;">${prettyJson}</pre>`; // Display the formatted JSON in green
 }
 
 function isJsonString(str) {
