@@ -112,8 +112,7 @@ function handleFileSelect(event) {
     if (!file) {
         return;
     }
-    document.getElementById('fileNameDisplay').textContent = `Selected file: ${file.name}`;
-
+    document.getElementById('fileName').textContent = file.name;
     const reader = new FileReader();
     reader.onload = function (fileEvent) {
         const content = fileEvent.target.result;
@@ -138,7 +137,7 @@ function parseLogFile(content) {
     });
 
     updateUUIDSelect(Object.keys(uuidMap));
-    document.getElementById('uuidCountDisplay').textContent = `Number of UUIDs: ${Object.keys(uuidMap).length}`;
+    document.getElementById('uuidCountDisplay').textContent = Object.keys(uuidMap).length;
     document.getElementById('uuidSelect').addEventListener('change', function () {
         const selectedUUID = this.value;
         allLines = uuidMap[selectedUUID];
