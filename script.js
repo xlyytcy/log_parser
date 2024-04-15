@@ -90,15 +90,8 @@ function displayLogLines(lines) {
     display.innerHTML = ''; // Clear previous display
     lines.forEach((line, index) => {
         const logLevel = line.split('|')[1].trim();
-        const jsonPart = line.split('|')[3].replace('Stringified input: ', '').trim();
-        let p;
-        if (isJsonString(jsonPart)) {
-            p = document.createElement('pre');
-            p.textContent = line.replace(jsonPart, JSON.stringify(JSON.parse(jsonPart), null, 4));
-        } else {
-            p = document.createElement('p');
-            p.textContent = line;
-        }
+        const p = document.createElement('p');
+        p.textContent = line;
         p.style.color = getColorForLogLevel(logLevel);
         display.appendChild(p);
         p.onclick = () => {
@@ -107,6 +100,7 @@ function displayLogLines(lines) {
         };
     });
 }
+
 
 function filterLogsByLevel() {
     const selectedLevel = logLevelSelect.value;
