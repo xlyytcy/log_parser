@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Log File Parser</title>
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
+
 <body>
     <div id="dropZone">Drag and drop your log file here or click to select a file.</div>
     <input type="file" id="logFileInput" accept=".txt, .log" style="display: none;">
-    <p id="fileNameDisplay">No file selected</p>
-    <p id="uuidCountDisplay"></p>
-    <div id="filterContainer"> 
+    <p id="fileNameDisplay"><strong>No file selected</strong></p>
+    <p id="uuidCountDisplay"><strong></strong></p>
+    <div id="filterContainer">
         <select id="logLevelSelect">
             <option value="">Filter by Log Level</option>
             <option value="trace">Trace</option>
@@ -30,4 +32,5 @@
     <div id="logDisplay"></div>
     <script src="script.js"></script>
 </body>
+
 </html>
