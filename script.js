@@ -107,16 +107,19 @@ function displayLogLines(lines) {
     lines.forEach((line, index) => {
         const logLevel = line.split('|')[1].trim();
         const p = document.createElement('p');
-        p.textContent = line;
+        const jsonPart = line.split('|')[3].replace('Stringified input: ', '').trim();
+        if (isJsonString(jsonPart)) {
+            const pre = document.createElement('pre');
+            pre.textContent = jsonPart;
+            p.textContent = line.replace(jsonPart, '');
+            p.appendChild(pre);
+        } else {
+            p.textContent = line;
+        }
         p.style.color = getColorForLogLevel(logLevel);
         display.appendChild(p);
-        // p.onclick = () => {
-        //     selectedIndex = index;
-        //     selectLineForJson(line, index);
-        // };
     });
 }
-
 
 function filterLogsByLevel() {
     const selectedLevel = logLevelSelect.value;
