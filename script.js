@@ -161,8 +161,8 @@ function displayTimeSpent(timestamps) {
     const minutes = Math.floor(timeSpentMs / 60000);
     const seconds = ((timeSpentMs % 60000) / 1000).toFixed(0);
     const milliseconds = timeSpentMs % 1000;
-    const timeSpentField = document.getElementById('timeSpent');
-    timeSpentField.textContent = `Time spent: ${minutes}:${seconds}:${milliseconds}`;
+    const timeValueField = document.getElementById('timeValue');
+    timeValueField.textContent = `${minutes}:${seconds}:${milliseconds}`;
 }
 
 document.addEventListener('DOMContentLoaded', () => {

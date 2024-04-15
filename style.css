@@ -18,7 +18,7 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 4fr 1fr 1fr;
     grid-gap: 1px;
-    min-width: 600px;
+    /* min-width: 600px; */
 }
 
 @media (max-width: 600px) {
@@ -93,6 +93,6 @@ body {
     cursor: default;
 }
 
-#timeSpent {
+/* #timeSpent {
     margin-left: 10px;
-}
+} */
