@@ -87,8 +87,6 @@ function parseLogFile(content) {
         allLines = uuidMap[selectedUUID];
         currentLines = allLines.slice(); // Clone all lines
         displayLogLines(currentLines);
-        // jsonBeautifyBtn.disabled = true; // Disable beautify button by default
-        jsonBeautifyBtn.onclick = null; // Clear previous click handlers
     });
 }
 
