@@ -73,7 +73,10 @@ body {
 
 #filterContainer {
     display: flex;
-    justify-content: space-between; 
+}
+
+#filterLogLevelBtn {
+    margin-left: 10px;
 }
 
 #jsonBeautifyBtn:disabled,
