@@ -5,6 +5,7 @@ const logLevelSelect = document.getElementById('logLevelSelect');
 const filterLogLevelBtn = document.getElementById('filterLogLevelBtn');
 let currentLines = []; // To store the current log lines
 let allLines = []; // To store all lines for current UUID
+let selectedIndex = -1; // Index of the selected line for JSON beautification
 
 dropZone.addEventListener('click', () => logFileInput.click());
 logFileInput.addEventListener('change', handleFileSelect, false);
@@ -25,7 +26,7 @@ dropZone.addEventListener('drop', function(event) {
     event.stopPropagation();
     event.preventDefault();
     dropZone.classList.remove('dragover');
-    const files = event.dataTransfer.files; // FileList object.
+    const files = event.dataTransfer.files;
     if (files.length > 0) {
         handleFileSelect({ target: { files: files } });
     }
@@ -93,7 +94,10 @@ function displayLogLines(lines) {
         p.textContent = line;
         p.style.color = getColorForLogLevel(logLevel);
         display.appendChild(p);
-        p.onclick = () => selectLineForJson(line, index);
+        p.onclick = () => {
+            selectedIndex = index;
+            selectLineForJson(line, index);
+        };
     });
 }
 
@@ -117,7 +121,7 @@ function selectLineForJson(line, index) {
     if (isJsonString(jsonPart)) {
         jsonBeautifyBtn.disabled = false;
         jsonBeautifyBtn.onclick = () => {
-            beautifyJson(jsonPart);
+            beautifyJson(jsonPart, index);
         };
     } else {
         jsonBeautifyBtn.disabled = true;
@@ -125,11 +129,11 @@ function selectLineForJson(line, index) {
     }
 }
 
-function beautifyJson(jsonString) {
+function beautifyJson(jsonString, index) {
     const json = JSON.parse(jsonString);
     const prettyJson = JSON.stringify(json, null, 4);
-    const display = document.getElementById('logDisplay');
-    display.innerHTML = `<pre style="white-space: pre-wrap; color: #4CAF50;">${prettyJson}</pre>`; // Display the formatted JSON in green
+    currentLines[index] = currentLines[index].replace(jsonString, prettyJson);
+    displayLogLines(currentLines); // Redisplay all lines with the beautified JSON in place
 }
 
 function isJsonString(str) {
