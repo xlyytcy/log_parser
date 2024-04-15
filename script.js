@@ -89,9 +89,16 @@ function displayLogLines(lines) {
     const display = document.getElementById('logDisplay');
     display.innerHTML = ''; // Clear previous display
     lines.forEach((line, index) => {
-        const p = document.createElement('p');
         const logLevel = line.split('|')[1].trim();
-        p.textContent = line;
+        const jsonPart = line.split('|')[3].replace('Stringified input: ', '').trim();
+        let p;
+        if (isJsonString(jsonPart)) {
+            p = document.createElement('pre');
+            p.textContent = line.replace(jsonPart, JSON.stringify(JSON.parse(jsonPart), null, 4));
+        } else {
+            p = document.createElement('p');
+            p.textContent = line;
+        }
         p.style.color = getColorForLogLevel(logLevel);
         display.appendChild(p);
         p.onclick = () => {
