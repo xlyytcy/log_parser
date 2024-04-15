@@ -3,126 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Log File Parser</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        #uuidSelect, #logDisplay {
-            margin-top: 20px;
-        }
-        #logDisplay {
-            border: 1px solid #ccc;
-            padding: 10px;
-            height: 300px;
-            overflow-y: scroll;
-        }
-        #dropZone {
-            margin-top: 20px;
-            height: 100px;
-            border: 2px dashed #ccc;
-            padding: 20px;
-            text-align: center;
-            color: #ccc;
-        }
-        #dropZone.dragover {
-            border-color: #000;
-            color: #000;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
     <div id="dropZone">Drag and drop your log file here or click to select a file.</div>
     <input type="file" id="logFileInput" accept=".txt, .log" style="display: none;">
+    <p id="fileNameDisplay" style="margin-top: 10px;">No file selected</p>
     <select id="uuidSelect">
         <option value="">Select UUID</option>
     </select>
     <div id="logDisplay"></div>
-
-    <script>
-        const logFileInput = document.getElementById('logFileInput');
-        const dropZone = document.getElementById('dropZone');
-
-        dropZone.addEventListener('click', () => logFileInput.click());
-        logFileInput.addEventListener('change', handleFileSelect, false);
-
-        dropZone.addEventListener('dragover', function(event) {
-            event.stopPropagation();
-            event.preventDefault();
-            event.dataTransfer.dropEffect = 'copy';
-            dropZone.classList.add('dragover');
-        });
-
-        dropZone.addEventListener('dragleave', function(event) {
-            dropZone.classList.remove('dragover');
-        });
-
-        dropZone.addEventListener('drop', function(event) {
-            event.stopPropagation();
-            event.preventDefault();
-            dropZone.classList.remove('dragover');
-            const files = event.dataTransfer.files; // FileList object.
-            if (files.length > 0) {
-                handleFileSelect({ target: { files: files } });
-            }
-        });
-
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            if (!file) {
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = function(fileEvent) {
-                const content = fileEvent.target.result;
-                parseLogFile(content);
-            };
-
-            reader.readAsText(file);
-        }
-
-        function parseLogFile(content) {
-            const lines = content.split('\n');
-            const uuidMap = {};
-
-            lines.forEach(line => {
-                const parts = line.split('|');
-                if (parts.length > 4) {
-                    const uuid = parts[4].trim();
-                    if (!uuidMap[uuid]) {
-                        uuidMap[uuid] = [];
-                    }
-                    uuidMap[uuid].push(line);
-                }
-            });
-
-            updateUUIDSelect(Object.keys(uuidMap));
-            document.getElementById('uuidSelect').addEventListener('change', function() {
-                const selectedUUID = this.value;
-                displayLogLines(uuidMap[selectedUUID]);
-            });
-        }
-
-        function updateUUIDSelect(uuids) {
-            const select = document.getElementById('uuidSelect');
-            select.innerHTML = '<option value="">Select UUID</option>'; // Reset the select
-            uuids.forEach(uuid => {
-                const option = document.createElement('option');
-                option.value = uuid;
-                option.textContent = uuid;
-                select.appendChild(option);
-            });
-        }
-
-        function displayLogLines(lines) {
-            const display = document.getElementById('logDisplay');
-            display.innerHTML = ''; // Clear previous display
-            lines.forEach(line => {
-                const p = document.createElement('p');
-                p.textContent = line;
-                display.appendChild(p);
-            });
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>

@@ -30,14 +30,70 @@ function handleFileSelect(event) {
     if (!file) {
         return;
     }
+    document.getElementById('fileNameDisplay').textContent = `Selected file: ${file.name}`;
 
     const reader = new FileReader();
     reader.onload = function(fileEvent) {
         const content = fileEvent.target.result;
         parseLogFile(content);
     };
-
     reader.readAsText(file);
 }
 
-// Implement parseLogFile, updateUUIDSelect, and displayLogLines as previously described
+function parseLogFile(content) {
+    const lines = content.split('\n');
+    const uuidMap = {};
+
+    lines.forEach(line => {
+        const parts = line.split('|');
+        if (parts.length > 4) {
+            const uuid = parts[4].trim();
+            if (!uuidMap[uuid]) {
+                uuidMap[uuid] = [];
+            }
+            uuidMap[uuid].push(line);
+        }
+    });
+
+    updateUUIDSelect(Object.keys(uuidMap));
+    document.getElementById('uuidSelect').addEventListener('change', function() {
+        const selectedUUID = this.value;
+        displayLogLines(uuidMap[selectedUUID]);
+    });
+}
+
+function updateUUIDSelect(uuids) {
+    const select = document.getElementById('uuidSelect');
+    select.innerHTML = '<option value="">Select UUID</option>'; // Reset the select
+    uuids.forEach(uuid => {
+        const option = document.createElement('option');
+        option.value = uuid;
+        option.textContent = uuid;
+        select.appendChild(option);
+    });
+}
+
+function displayLogLines(lines) {
+    const display = document.getElementById('logDisplay');
+    display.innerHTML = ''; // Clear previous display
+    lines.forEach(line => {
+        const p = document.createElement('p');
+        const logLevel = line.split('|')[1].trim();
+        p.textContent = line;
+        p.style.color = getColorForLogLevel(logLevel);
+        display.appendChild(p);
+    });
+}
+
+function getColorForLogLevel(logLevel) {
+    const colors = {
+        'trace': '#888',
+        'debug': '#009',
+        'info': '#079',
+        'warn': '#e90',
+        'err': '#c00',
+        'critical': '#f00',
+        'off': '#000'
+    };
+    return colors[logLevel] || '#000'; // Default to black if log level is undefined
+}
