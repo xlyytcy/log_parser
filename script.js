@@ -55,11 +55,30 @@ document.addEventListener('DOMContentLoaded', () => {
     jsonBeautifyBtn.addEventListener('click', beautifyJsonInGrid);
 });
 
+// function beautifyJsonInGrid() {
+//     const logDisplay = document.getElementById('logDisplay');
+//     const logRows = logDisplay.getElementsByClassName('log-row');
+//     Array.from(logRows).forEach(row => {
+//         const messageCell = row.children[3]; // Assuming the JSON string is in the "Message" column
+//         const jsonPart = messageCell.textContent.replace('Stringified input: ', '').trim();
+//         if (isJsonString(jsonPart)) {
+//             const json = JSON.parse(jsonPart);
+//             const prettyJson = JSON.stringify(json, null, 4);
+//             const pre = document.createElement('pre');
+//             pre.style.whiteSpace = 'pre-wrap';
+//             pre.textContent = prettyJson;
+//             messageCell.innerHTML = ''; // Clear the existing content
+//             messageCell.appendChild(pre); // Insert beautified JSON
+//         }
+//     });
+// }
+
 function beautifyJsonInGrid() {
     const logDisplay = document.getElementById('logDisplay');
     const logRows = logDisplay.getElementsByClassName('log-row');
-    Array.from(logRows).forEach(row => {
-        const messageCell = row.children[3]; // Assuming the JSON string is in the "Message" column
+    if (logRows.length > 0) {
+        const row = logRows[0];
+        const messageCell = row.children[3];
         const jsonPart = messageCell.textContent.replace('Stringified input: ', '').trim();
         if (isJsonString(jsonPart)) {
             const json = JSON.parse(jsonPart);
@@ -67,10 +86,10 @@ function beautifyJsonInGrid() {
             const pre = document.createElement('pre');
             pre.style.whiteSpace = 'pre-wrap';
             pre.textContent = prettyJson;
-            messageCell.innerHTML = ''; // Clear the existing content
-            messageCell.appendChild(pre); // Insert beautified JSON
+            messageCell.innerHTML = ''; 
+            messageCell.appendChild(pre);
         }
-    });
+    }
 }
 
 function displayLogLines(lines) {
