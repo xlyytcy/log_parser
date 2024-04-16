@@ -78,23 +78,20 @@ function displayLogLines(lines) {
     const display = document.getElementById('logDisplay');
     display.innerHTML = ''; // Clear previous display
     createLogHeader(display); // Add header row
-    lines.forEach((line, index) => {
+
+    lines.forEach(line => {
         const parts = line.split('|');
         const row = document.createElement('div');
         row.classList.add('log-row');
-        parts.forEach((part, idx) => {
+        row.style.display = 'grid'; // Ensure that each row also behaves as a grid
+        row.style.gridTemplateColumns = '1fr 1fr 1fr 4fr 1fr 1fr'; // Repeat the same column template
+
+        parts.forEach(part => {
             const cell = document.createElement('p');
-            if (idx === 3 && isJsonString(part.replace('Stringified input: ', '').trim())) {
-                const jsonPart = part.replace('Stringified input: ', '').trim();
-                const pre = document.createElement('pre');
-                pre.textContent = jsonPart;
-                cell.appendChild(pre);
-            } else {
-                cell.textContent = part.trim();
-            }
-            cell.style.color = getColorForLogLevel(parts[1].trim()); // Color based on log level
+            cell.textContent = part.trim();
             row.appendChild(cell);
         });
+
         display.appendChild(row);
     });
 }
