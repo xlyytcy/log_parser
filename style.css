@@ -16,7 +16,7 @@ body {
     height: calc(90vh - 150px);
     overflow-y: auto;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 4fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 2fr 1fr 1fr;
     grid-gap: 1px;
     /* min-width: 600px; */
 }
