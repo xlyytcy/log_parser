@@ -38,8 +38,9 @@ body {
     padding: 5px;
     text-align: left;
     border-bottom: 1px solid #ccc;
+    max-width: 600px;
+    overflow-wrap: break-word;
 }
-
 .log-header p {
     font-weight: bold;
     background-color: #f3f3f3;
