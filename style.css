@@ -41,10 +41,13 @@ body {
     max-width: 600px;
     overflow-wrap: break-word;
 }
+
 .log-header p {
     font-weight: bold;
     background-color: #f3f3f3;
     height: 30px;
+    position: sticky;
+    top: 0;
 }
 
 #dropZone {
