@@ -5,7 +5,6 @@ const logLevelSelect = document.getElementById('logLevelSelect');
 const filterLogLevelBtn = document.getElementById('filterLogLevelBtn');
 let currentLines = []; // To store the current log lines
 let allLines = []; // To store all lines for current UUID
-let selectedIndex = -1; // Index of the selected line for JSON beautification
 let uuidTimestamps = {}; // To store the first and last timestamp for each UUID
 
 dropZone.addEventListener('click', () => logFileInput.click());
@@ -55,23 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
     jsonBeautifyBtn.addEventListener('click', beautifyJsonInGrid);
 });
 
-// function beautifyJsonInGrid() {
-//     const logDisplay = document.getElementById('logDisplay');
-//     const logRows = logDisplay.getElementsByClassName('log-row');
-//     Array.from(logRows).forEach(row => {
-//         const messageCell = row.children[3]; // Assuming the JSON string is in the "Message" column
-//         const jsonPart = messageCell.textContent.replace('Stringified input: ', '').trim();
-//         if (isJsonString(jsonPart)) {
-//             const json = JSON.parse(jsonPart);
-//             const prettyJson = JSON.stringify(json, null, 4);
-//             const pre = document.createElement('pre');
-//             pre.style.whiteSpace = 'pre-wrap';
-//             pre.textContent = prettyJson;
-//             messageCell.innerHTML = ''; // Clear the existing content
-//             messageCell.appendChild(pre); // Insert beautified JSON
-//         }
-//     });
-// }
 
 function beautifyJsonInGrid() {
     const logDisplay = document.getElementById('logDisplay');
@@ -86,7 +68,7 @@ function beautifyJsonInGrid() {
             const pre = document.createElement('pre');
             pre.style.whiteSpace = 'pre-wrap';
             pre.textContent = prettyJson;
-            messageCell.innerHTML = ''; 
+            messageCell.innerHTML = '';
             messageCell.appendChild(pre);
         }
     }
@@ -102,7 +84,7 @@ function displayLogLines(lines) {
         row.classList.add('log-row');
         parts.forEach((part, idx) => {
             const cell = document.createElement('p');
-            if (idx === 3 && isJsonString(part.replace('Stringified input: ', '').trim())) { // For JSON part
+            if (idx === 3 && isJsonString(part.replace('Stringified input: ', '').trim())) {
                 const jsonPart = part.replace('Stringified input: ', '').trim();
                 const pre = document.createElement('pre');
                 pre.textContent = jsonPart;
@@ -202,23 +184,7 @@ function updateUUIDSelect(uuids) {
     });
 }
 
-function displayLogLines(lines) {
-    const display = document.getElementById('logDisplay');
-    display.innerHTML = ''; // Clear previous display
-    createLogHeader(display); // Add header row
-    lines.forEach((line) => {
-        const parts = line.split('|');
-        const row = document.createElement('div');
-        row.classList.add('log-row');
-        parts.forEach(part => {
-            const cell = document.createElement('p');
-            cell.textContent = part.trim();
-            cell.style.color = getColorForLogLevel(parts[1].trim()); // Color based on log level
-            row.appendChild(cell);
-        });
-        display.appendChild(row);
-    });
-}
+
 
 function filterLogsByLevel() {
     const selectedLevel = logLevelSelect.value;

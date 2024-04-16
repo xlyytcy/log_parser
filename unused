@@ -1,0 +1,37 @@
+// function beautifyJsonInGrid() {
+//     const logDisplay = document.getElementById('logDisplay');
+//     const logRows = logDisplay.getElementsByClassName('log-row');
+//     Array.from(logRows).forEach(row => {
+//         const messageCell = row.children[3]; // Assuming the JSON string is in the "Message" column
+//         const jsonPart = messageCell.textContent.replace('Stringified input: ', '').trim();
+//         if (isJsonString(jsonPart)) {
+//             const json = JSON.parse(jsonPart);
+//             const prettyJson = JSON.stringify(json, null, 4);
+//             const pre = document.createElement('pre');
+//             pre.style.whiteSpace = 'pre-wrap';
+//             pre.textContent = prettyJson;
+//             messageCell.innerHTML = ''; // Clear the existing content
+//             messageCell.appendChild(pre); // Insert beautified JSON
+//         }
+//     });
+// }
+
+
+
+// function displayLogLines(lines) {
+//     const display = document.getElementById('logDisplay');
+//     display.innerHTML = ''; // Clear previous display
+//     createLogHeader(display); // Add header row
+//     lines.forEach((line) => {
+//         const parts = line.split('|');
+//         const row = document.createElement('div');
+//         row.classList.add('log-row');
+//         parts.forEach(part => {
+//             const cell = document.createElement('p');
+//             cell.textContent = part.trim();
+//             cell.style.color = getColorForLogLevel(parts[1].trim()); // Color based on log level
+//             row.appendChild(cell);
+//         });
+//         display.appendChild(row);
+//     });
+// }
