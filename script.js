@@ -171,12 +171,26 @@ function parseLogFile(content) {
 
 function displayTimeSpent(timestamps) {
     const timeSpentMs = timestamps.last - timestamps.first;
+
+    // Calculate minutes, seconds, and milliseconds separately
     const minutes = Math.floor(timeSpentMs / 60000);
-    const seconds = ((timeSpentMs % 60000) / 1000).toFixed(0);
-    const milliseconds = timeSpentMs % 1000;
+    const remainingMs = timeSpentMs % 60000;
+    const seconds = Math.floor(remainingMs / 1000);
+    const milliseconds = remainingMs % 1000;
+
+    // Format the time components to ensure leading zeros where necessary
+    const formattedTime = `${padZero(minutes)}:${padZero(seconds)}:${padZero(milliseconds, 3)}`;
+
     const timeValueField = document.getElementById('timeValue');
-    timeValueField.textContent = `${minutes}:${seconds}:${milliseconds}`;
+    timeValueField.textContent = formattedTime;
 }
+
+// Helper function to pad zeros for formatting
+function padZero(num, width = 2) {
+    const numString = String(num);
+    return numString.length >= width ? numString : new Array(width - numString.length + 1).join('0') + numString;
+}
+
 
 document.addEventListener('DOMContentLoaded', () => {
     const timeSpentField = document.createElement('p');
