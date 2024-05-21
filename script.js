@@ -86,9 +86,9 @@ function displayLogLines(lines) {
             const cell = document.createElement('p');
             cell.textContent = part.trim();
             cell.style.color = getColorForLogLevel(parts[1].trim()); // Color based on log level
-            if (index === 3 && isJsonString(part.trim())) {
+            if (index === 3 && isJsonString(part.trim().replace('Stringified input: ', ''))) {
                 cell.classList.add('json-cell');
-                cell.addEventListener('click', () => toggleJsonExpand(cell, part.trim()));
+                cell.addEventListener('click', () => toggleJsonExpand(cell, part.trim().replace('Stringified input: ', '')));
             }
             row.appendChild(cell);
         });
@@ -98,7 +98,7 @@ function displayLogLines(lines) {
 
 function toggleJsonExpand(cell, jsonString) {
     if (cell.classList.contains('expanded')) {
-        cell.textContent = jsonString;
+        cell.textContent = "Stringified input: " + jsonString;
     } else {
         const json = JSON.parse(jsonString);
         const prettyJson = JSON.stringify(json, null, 4);
@@ -110,6 +110,7 @@ function toggleJsonExpand(cell, jsonString) {
     }
     cell.classList.toggle('expanded');
 }
+
 
 function isJsonString(str) {
     try {
