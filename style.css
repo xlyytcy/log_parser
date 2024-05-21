@@ -105,7 +105,12 @@ body {
     white-space: pre-wrap;
 }
 
-
-/* #timeSpent {
-    margin-left: 10px;
-} */
+.show-more {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 2px 5px;
+    margin-left: 5px;
+    font-size: 0.9em;
+}

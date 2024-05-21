@@ -84,12 +84,21 @@ function displayLogLines(lines) {
         row.classList.add('log-row');
         parts.forEach((part, index) => {
             const cell = document.createElement('p');
-            cell.textContent = part.trim();
+            let content = part.trim();
             cell.style.color = getColorForLogLevel(parts[1].trim()); // Color based on log level
-            if (index === 3 && isJsonString(part.trim().replace('Stringified input: ', ''))) {
-                cell.classList.add('json-cell');
-                cell.addEventListener('click', () => toggleJsonExpand(cell, part.trim().replace('Stringified input: ', '')));
+            
+            if (index === 3 && content.startsWith('Stringified input: ')) {
+                content = content.replace('Stringified input: ', '');
+                if (isJsonString(content) && content.length > 100) { 
+                    cell.innerHTML = `Stringified input: ${content.substring(0, 100)}... <button class="show-more">Show More</button>`;
+                    cell.querySelector('.show-more').addEventListener('click', () => toggleJsonExpand(cell, content));
+                } else {
+                    cell.textContent = "Stringified input: " + content;
+                }
+            } else {
+                cell.textContent = part.trim();
             }
+
             row.appendChild(cell);
         });
         display.appendChild(row);
@@ -98,7 +107,8 @@ function displayLogLines(lines) {
 
 function toggleJsonExpand(cell, jsonString) {
     if (cell.classList.contains('expanded')) {
-        cell.textContent = "Stringified input: " + jsonString;
+        cell.innerHTML = `Stringified input: ${jsonString.substring(0, 100)}... <button class="show-more">Show More</button>`;
+        cell.querySelector('.show-more').addEventListener('click', () => toggleJsonExpand(cell, jsonString));
     } else {
         const json = JSON.parse(jsonString);
         const prettyJson = JSON.stringify(json, null, 4);
@@ -110,6 +120,7 @@ function toggleJsonExpand(cell, jsonString) {
     }
     cell.classList.toggle('expanded');
 }
+
 
 
 function isJsonString(str) {
