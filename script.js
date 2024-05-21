@@ -82,14 +82,33 @@ function displayLogLines(lines) {
         const parts = line.split('|');
         const row = document.createElement('div');
         row.classList.add('log-row');
-        parts.forEach(part => {
+        parts.forEach((part, index) => {
             const cell = document.createElement('p');
             cell.textContent = part.trim();
             cell.style.color = getColorForLogLevel(parts[1].trim()); // Color based on log level
+            if (index === 3 && isJsonString(part.trim())) {
+                cell.classList.add('json-cell');
+                cell.addEventListener('click', () => toggleJsonExpand(cell, part.trim()));
+            }
             row.appendChild(cell);
         });
         display.appendChild(row);
     });
+}
+
+function toggleJsonExpand(cell, jsonString) {
+    if (cell.classList.contains('expanded')) {
+        cell.textContent = jsonString;
+    } else {
+        const json = JSON.parse(jsonString);
+        const prettyJson = JSON.stringify(json, null, 4);
+        const pre = document.createElement('pre');
+        pre.style.whiteSpace = 'pre-wrap';
+        pre.textContent = prettyJson;
+        cell.innerHTML = '';
+        cell.appendChild(pre);
+    }
+    cell.classList.toggle('expanded');
 }
 
 function isJsonString(str) {

@@ -97,6 +97,15 @@ body {
     cursor: default;
 }
 
+.json-cell {
+    cursor: pointer;
+}
+
+.json-cell.expanded pre {
+    white-space: pre-wrap;
+}
+
+
 /* #timeSpent {
     margin-left: 10px;
 } */
