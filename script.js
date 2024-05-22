@@ -1,6 +1,6 @@
 const logFileInput = document.getElementById('logFileInput');
 const dropZone = document.getElementById('dropZone');
-const jsonBeautifyBtn = document.getElementById('jsonBeautifyBtn');
+// const jsonBeautifyBtn = document.getElementById('jsonBeautifyBtn');
 const logLevelSelect = document.getElementById('logLevelSelect');
 const filterLogLevelBtn = document.getElementById('filterLogLevelBtn');
 let currentLines = []; // To store the current log lines
@@ -49,30 +49,30 @@ function createLogHeader(display) {
     display.appendChild(header);
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const jsonBeautifyBtn = document.getElementById('jsonBeautifyBtn');
-    jsonBeautifyBtn.addEventListener('click', beautifyJsonInGrid);
-});
+// document.addEventListener('DOMContentLoaded', () => {
+//     const jsonBeautifyBtn = document.getElementById('jsonBeautifyBtn');
+//     jsonBeautifyBtn.addEventListener('click', beautifyJsonInGrid);
+// });
 
 
-function beautifyJsonInGrid() {
-    const logDisplay = document.getElementById('logDisplay');
-    const logRows = logDisplay.getElementsByClassName('log-row');
-    if (logRows.length > 0) {
-        const row = logRows[0];
-        const messageCell = row.children[3];
-        const jsonPart = messageCell.textContent.replace('Stringified input: ', '').trim();
-        if (isJsonString(jsonPart)) {
-            const json = JSON.parse(jsonPart);
-            const prettyJson = JSON.stringify(json, null, 4);
-            const pre = document.createElement('pre');
-            pre.style.whiteSpace = 'pre-wrap';
-            pre.textContent = prettyJson;
-            messageCell.innerHTML = '';
-            messageCell.appendChild(pre);
-        }
-    }
-}
+// function beautifyJsonInGrid() {
+//     const logDisplay = document.getElementById('logDisplay');
+//     const logRows = logDisplay.getElementsByClassName('log-row');
+//     if (logRows.length > 0) {
+//         const row = logRows[0];
+//         const messageCell = row.children[3];
+//         const jsonPart = messageCell.textContent.replace('Stringified input: ', '').trim();
+//         if (isJsonString(jsonPart)) {
+//             const json = JSON.parse(jsonPart);
+//             const prettyJson = JSON.stringify(json, null, 4);
+//             const pre = document.createElement('pre');
+//             pre.style.whiteSpace = 'pre-wrap';
+//             pre.textContent = prettyJson;
+//             messageCell.innerHTML = '';
+//             messageCell.appendChild(pre);
+//         }
+//     }
+// }
 
 function displayLogLines(lines) {
     const display = document.getElementById('logDisplay');
