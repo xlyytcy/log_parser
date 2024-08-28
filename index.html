@@ -1,36 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
+<div id="dropZone">
+    Drag and drop your log file here or click to select a file.
+</div>
 
-<head>
-    <meta charset="UTF-8">
-    <title>Log File Parser</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
-</head>
+<p>Selected file: <span id="fileName"></span></p>
 
-<body>
-    <div id="dropZone">Drag and drop your log file here or click to select a file.</div>
-    <input type="file" id="logFileInput" accept=".txt, .log" style="display: none;">
-    <p id="fileNameDisplay"><strong>Selected file:</strong> <span id="fileName"></span></p>
-    <p id="uuidCountDisplay"><strong>Number of UUIDs:</strong> <span id="uuidCount"></span></p>
-    <div id="filterContainer">
-        <select id="logLevelSelect">
-            <option value="">Filter by Log Level</option>
-            <option value="trace">Trace</option>
-            <option value="debug">Debug</option>
-            <option value="info">Info</option>
-            <option value="warn">Warn</option>
-            <option value="err">Error</option>
-            <option value="critical">Critical</option>
-            <option value="off">Off</option>
-        </select>
-        <button id="filterLogLevelBtn">Filter Logs</button>
-    </div>
-    <select id="uuidSelect">
-        <option value="">Select UUID</option>
+<p>Number of UUIDs: <span id="uuidCount"></span></p>
+
+<div id="filterContainer">
+    <label for="logLevelSelect">Filter by Log Level:</label>
+    <select id="logLevelSelect">
+        <option value="">All Levels</option>
+        <option value="trace">Trace</option>
+        <option value="debug">Debug</option>
+        <option value="info">Info</option>
+        <option value="warn">Warn</option>
+        <option value="err">Error</option>
+        <option value="critical">Critical</option>
     </select>
-    <p id="timeSpent"><strong>Time spent (m:s:ms):</strong> <span id="timeValue"></span></p> 
-    <div id="logDisplay"></div>
-    <script src="script.js"></script>
-</body>
+</div>
 
-</html>
+<select id="uuidSelect">
+    <option value="">Select UUID</option>
+</select>
+
+<p>Time spent (m:s:ms): <span id="timeValue"></span></p>
+
+<div id="logDisplay"></div>

@@ -1,7 +1,7 @@
 body {
     font-family: Arial, sans-serif;
     margin: 0;
-    padding: 0;
+    padding: 20px;
     box-sizing: border-box;
 }
 
@@ -13,7 +13,7 @@ body {
 #logDisplay {
     border: 1px solid #ccc;
     padding: 10px;
-    height: calc(90vh - 150px);
+    height: calc(90vh - 200px);
     overflow-y: auto;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 2fr 1fr 1fr;
@@ -56,6 +56,12 @@ body {
     padding: 10px;
     text-align: center;
     color: #ccc;
+    cursor: pointer;
+}
+
+#dropZone:hover {
+    border-color: #999;
+    color: #999;
 }
 
 #dropZone.dragover {
@@ -64,33 +70,25 @@ body {
 }
 
 #fileNameDisplay,
-#uuidCountDisplay,
-#filterLogLevelBtn {
+#uuidCountDisplay {
     margin-top: 10px;
     display: block;
 }
 
-#filterLogLevelBtn {
-    font-size: 1em;
-    padding: 5px 10px;
-    color: #fff;
-    background-color: #4CAF50;
-    border: none;
-    cursor: pointer;
-    outline: none;
-}
-
 #filterContainer {
+    margin-top: 20px;
     display: flex;
+    align-items: center;
 }
 
-#filterLogLevelBtn {
+#logLevelSelect {
     margin-left: 10px;
+    padding: 5px;
 }
 
-#filterLogLevelBtn:disabled {
-    background-color: #ccc;
-    cursor: default;
+#uuidSelect {
+    margin-top: 10px;
+    padding: 5px;
 }
 
 .json-cell {

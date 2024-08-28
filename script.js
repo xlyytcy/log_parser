@@ -1,7 +1,6 @@
 const logFileInput = document.getElementById('logFileInput');
 const dropZone = document.getElementById('dropZone');
 const logLevelSelect = document.getElementById('logLevelSelect');
-const filterLogLevelBtn = document.getElementById('filterLogLevelBtn');
 let currentLines = []; // To store the current log lines
 let allLines = []; // To store all lines for current UUID
 let uuidTimestamps = {}; // To store the first and last timestamp for each UUID
@@ -9,7 +8,7 @@ let filteredLines = []; // To store filtered lines
 
 dropZone.addEventListener('click', () => logFileInput.click());
 logFileInput.addEventListener('change', handleFileSelect, false);
-filterLogLevelBtn.addEventListener('click', filterLogsByLevel);
+logLevelSelect.addEventListener('change', filterLogsByLevel);
 
 dropZone.addEventListener('dragover', function (event) {
     event.stopPropagation();
@@ -74,12 +73,10 @@ function createLogHeader(display) {
 //     }
 // }
 
-function displayLogLines(lines) {
+function displayLogLines() {
     const display = document.getElementById('logDisplay');
     display.innerHTML = ''; // Clear previous display
     createLogHeader(display); // Add header row
-    
-    filteredLines = lines; // Store the full set of filtered lines
     
     const fragment = document.createDocumentFragment();
     const visibleLines = 100; // Adjust based on your needs
@@ -103,6 +100,7 @@ function displayLogLines(lines) {
         }
     });
 }
+
 function createLogRow(line) {
     const parts = line.split('|');
     const row = document.createElement('div');
@@ -128,6 +126,7 @@ function createLogRow(line) {
     });
     return row;
 }
+
 
 function toggleJsonExpand(cell, jsonString) {
     if (cell.classList.contains('expanded')) {
@@ -212,8 +211,7 @@ function parseLogFile(content) {
         document.getElementById('uuidSelect').addEventListener('change', function () {
             const selectedUUID = this.value;
             allLines = uuidMap[selectedUUID];
-            filteredLines = allLines.slice(); // Initialize filteredLines with all lines
-            displayLogLines(filteredLines);
+            filterLogsByLevel(); // Apply current filter
             displayTimeSpent(uuidTimestamps[selectedUUID]);
         });
     };
@@ -278,7 +276,7 @@ function filterLogsByLevel() {
         filteredLines = allLines.slice(); // No filter applied, use all lines
     }
     
-    displayLogLines(filteredLines);
+    displayLogLines();
 }
 
 function beautifyJson(jsonString, index) {
