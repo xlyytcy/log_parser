@@ -1,6 +1,5 @@
 const logFileInput = document.getElementById('logFileInput');
 const dropZone = document.getElementById('dropZone');
-// const jsonBeautifyBtn = document.getElementById('jsonBeautifyBtn');
 const logLevelSelect = document.getElementById('logLevelSelect');
 const filterLogLevelBtn = document.getElementById('filterLogLevelBtn');
 let currentLines = []; // To store the current log lines
@@ -78,31 +77,59 @@ function displayLogLines(lines) {
     const display = document.getElementById('logDisplay');
     display.innerHTML = ''; // Clear previous display
     createLogHeader(display); // Add header row
-    lines.forEach((line) => {
-        const parts = line.split('|');
-        const row = document.createElement('div');
-        row.classList.add('log-row');
-        parts.forEach((part, index) => {
-            const cell = document.createElement('p');
-            let content = part.trim();
-            cell.style.color = getColorForLogLevel(parts[1].trim()); // Color based on log level
-            
-            if (index === 3 && content.startsWith('Stringified input: ')) {
-                content = content.replace('Stringified input: ', '');
-                if (isJsonString(content) && content.length > 100) { 
-                    cell.innerHTML = `Stringified input: ${content.substring(0, 100)}... <button class="show-more">Show More</button>`;
-                    cell.querySelector('.show-more').addEventListener('click', () => toggleJsonExpand(cell, content));
-                } else {
-                    cell.textContent = "Stringified input: " + content;
-                }
-            } else {
-                cell.textContent = part.trim();
-            }
 
-            row.appendChild(cell);
-        });
-        display.appendChild(row);
+    // Create a document fragment to batch DOM operations
+    const fragment = document.createDocumentFragment();
+
+    // Use a virtual scrolling technique
+    const visibleLines = 100; // Adjust based on your needs
+    let currentIndex = 0;
+
+    function renderVisibleLines() {
+        const endIndex = Math.min(currentIndex + visibleLines, lines.length);
+        for (let i = currentIndex; i < endIndex; i++) {
+            const line = lines[i];
+            const row = createLogRow(line);
+            fragment.appendChild(row);
+        }
+        display.appendChild(fragment);
+        currentIndex = endIndex;
+    }
+
+    renderVisibleLines();
+
+    // Implement infinite scrolling
+    display.addEventListener('scroll', () => {
+        if (display.scrollTop + display.clientHeight >= display.scrollHeight - 100) {
+            renderVisibleLines();
+        }
     });
+}
+
+function createLogRow(line) {
+    const parts = line.split('|');
+    const row = document.createElement('div');
+    row.classList.add('log-row');
+    parts.forEach((part, index) => {
+        const cell = document.createElement('p');
+        let content = part.trim();
+        cell.style.color = getColorForLogLevel(parts[1].trim());
+
+        if (index === 3 && content.startsWith('Stringified input: ')) {
+            content = content.replace('Stringified input: ', '');
+            if (isJsonString(content) && content.length > 100) {
+                cell.innerHTML = `Stringified input: ${content.substring(0, 100)}... <button class="show-more">Show More</button>`;
+                cell.querySelector('.show-more').addEventListener('click', () => toggleJsonExpand(cell, content));
+            } else {
+                cell.textContent = "Stringified input: " + content;
+            }
+        } else {
+            cell.textContent = content;
+        }
+
+        row.appendChild(cell);
+    });
+    return row;
 }
 
 function toggleJsonExpand(cell, jsonString) {
@@ -151,34 +178,50 @@ function parseLogFile(content) {
     const lines = content.split('\n');
     const uuidMap = {};
 
-    lines.forEach(line => {
-        const parts = line.split('|');
-        if (parts.length > 4) {
-            const uuid = parts[4].trim();
-            const timestamp = parseInt(parts[0].trim());
-            if (!uuidMap[uuid]) {
-                uuidMap[uuid] = [];
-                uuidTimestamps[uuid] = { first: timestamp, last: timestamp };
-            }
-            uuidMap[uuid].push(line);
-            if (timestamp < uuidTimestamps[uuid].first) {
-                uuidTimestamps[uuid].first = timestamp;
-            }
-            if (timestamp > uuidTimestamps[uuid].last) {
-                uuidTimestamps[uuid].last = timestamp;
-            }
-        }
-    });
+    // Use a Web Worker for parsing to avoid blocking the main thread
+    const worker = new Worker(URL.createObjectURL(new Blob([`
+        self.onmessage = function(e) {
+            const lines = e.data;
+            const uuidMap = {};
+            const uuidTimestamps = {};
 
-    updateUUIDSelect(Object.keys(uuidMap));
-    document.getElementById('uuidCount').textContent = Object.keys(uuidMap).length;
-    document.getElementById('uuidSelect').addEventListener('change', function () {
-        const selectedUUID = this.value;
-        allLines = uuidMap[selectedUUID];
-        currentLines = allLines.slice(); // Clone all lines
-        displayLogLines(currentLines);
-        displayTimeSpent(uuidTimestamps[selectedUUID]); // Display time spent
-    });
+            lines.forEach(line => {
+                const parts = line.split('|');
+                if (parts.length > 4) {
+                    const uuid = parts[4].trim();
+                    const timestamp = parseInt(parts[0].trim());
+                    if (!uuidMap[uuid]) {
+                        uuidMap[uuid] = [];
+                        uuidTimestamps[uuid] = { first: timestamp, last: timestamp };
+                    }
+                    uuidMap[uuid].push(line);
+                    if (timestamp < uuidTimestamps[uuid].first) {
+                        uuidTimestamps[uuid].first = timestamp;
+                    }
+                    if (timestamp > uuidTimestamps[uuid].last) {
+                        uuidTimestamps[uuid].last = timestamp;
+                    }
+                }
+            });
+
+            self.postMessage({uuidMap, uuidTimestamps});
+        };
+    `], { type: 'application/javascript' })));
+
+    worker.onmessage = function (e) {
+        const { uuidMap, uuidTimestamps } = e.data;
+        updateUUIDSelect(Object.keys(uuidMap));
+        document.getElementById('uuidCount').textContent = Object.keys(uuidMap).length;
+        document.getElementById('uuidSelect').addEventListener('change', function () {
+            const selectedUUID = this.value;
+            allLines = uuidMap[selectedUUID];
+            currentLines = allLines.slice();
+            displayLogLines(currentLines);
+            displayTimeSpent(uuidTimestamps[selectedUUID]);
+        });
+    };
+
+    worker.postMessage(lines);
 }
 
 function displayTimeSpent(timestamps) {
