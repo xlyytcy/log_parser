@@ -5,6 +5,7 @@ const filterLogLevelBtn = document.getElementById('filterLogLevelBtn');
 let currentLines = []; // To store the current log lines
 let allLines = []; // To store all lines for current UUID
 let uuidTimestamps = {}; // To store the first and last timestamp for each UUID
+let filteredLines = []; // To store filtered lines
 
 dropZone.addEventListener('click', () => logFileInput.click());
 logFileInput.addEventListener('change', handleFileSelect, false);
@@ -77,35 +78,31 @@ function displayLogLines(lines) {
     const display = document.getElementById('logDisplay');
     display.innerHTML = ''; // Clear previous display
     createLogHeader(display); // Add header row
-
-    // Create a document fragment to batch DOM operations
+    
+    filteredLines = lines; // Store the full set of filtered lines
+    
     const fragment = document.createDocumentFragment();
-
-    // Use a virtual scrolling technique
     const visibleLines = 100; // Adjust based on your needs
-    let currentIndex = 0;
 
-    function renderVisibleLines() {
-        const endIndex = Math.min(currentIndex + visibleLines, lines.length);
-        for (let i = currentIndex; i < endIndex; i++) {
-            const line = lines[i];
+    function renderVisibleLines(startIndex) {
+        const endIndex = Math.min(startIndex + visibleLines, filteredLines.length);
+        for (let i = startIndex; i < endIndex; i++) {
+            const line = filteredLines[i];
             const row = createLogRow(line);
             fragment.appendChild(row);
         }
         display.appendChild(fragment);
-        currentIndex = endIndex;
     }
 
-    renderVisibleLines();
+    renderVisibleLines(0);
 
     // Implement infinite scrolling
     display.addEventListener('scroll', () => {
         if (display.scrollTop + display.clientHeight >= display.scrollHeight - 100) {
-            renderVisibleLines();
+            renderVisibleLines(display.children.length - 1); // -1 to account for the header
         }
     });
 }
-
 function createLogRow(line) {
     const parts = line.split('|');
     const row = document.createElement('div');
@@ -206,17 +203,17 @@ function parseLogFile(content) {
 
             self.postMessage({uuidMap, uuidTimestamps});
         };
-    `], { type: 'application/javascript' })));
+    `], {type: 'application/javascript'})));
 
-    worker.onmessage = function (e) {
-        const { uuidMap, uuidTimestamps } = e.data;
+    worker.onmessage = function(e) {
+        const {uuidMap, uuidTimestamps} = e.data;
         updateUUIDSelect(Object.keys(uuidMap));
         document.getElementById('uuidCount').textContent = Object.keys(uuidMap).length;
         document.getElementById('uuidSelect').addEventListener('change', function () {
             const selectedUUID = this.value;
             allLines = uuidMap[selectedUUID];
-            currentLines = allLines.slice();
-            displayLogLines(currentLines);
+            filteredLines = allLines.slice(); // Initialize filteredLines with all lines
+            displayLogLines(filteredLines);
             displayTimeSpent(uuidTimestamps[selectedUUID]);
         });
     };
@@ -269,17 +266,19 @@ function updateUUIDSelect(uuids) {
 
 function filterLogsByLevel() {
     const selectedLevel = logLevelSelect.value;
+    const levels = ['trace', 'debug', 'info', 'warn', 'err', 'critical'];
+    
     if (selectedLevel) {
-        const levels = ['trace', 'debug', 'info', 'warn', 'err', 'critical'];
         const minLevelIndex = levels.indexOf(selectedLevel);
-        currentLines = allLines.filter(line => {
-            const logLevel = line.split('|')[1].trim();
+        filteredLines = allLines.filter(line => {
+            const logLevel = line.split('|')[1].trim().toLowerCase();
             return levels.indexOf(logLevel) >= minLevelIndex;
         });
     } else {
-        currentLines = allLines.slice(); // No filter applied, clone all lines
+        filteredLines = allLines.slice(); // No filter applied, use all lines
     }
-    displayLogLines(currentLines);
+    
+    displayLogLines(filteredLines);
 }
 
 function beautifyJson(jsonString, index) {
