@@ -5,48 +5,71 @@ body {
     box-sizing: border-box;
 }
 
-#uuidSelect,
-#logDisplay {
-    margin-top: 20px;
-}
-
 #logDisplay {
     border: 1px solid #ccc;
     padding: 10px;
-    height: calc(90vh - 200px);
+    height: calc(90vh - 300px);
     overflow-y: auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 2fr 1fr 1fr;
-    grid-gap: 1px;
-}
-
-@media (max-width: 600px) {
-    #logDisplay {
-        grid-template-columns: 1fr 1fr 1fr 2fr 1fr 1fr;
-    }
+    margin-top: 20px;
 }
 
 .log-header,
 .log-row {
-    display: contents;
-}
-
-.log-header p,
-.log-row p {
-    margin: 0;
-    padding: 5px;
-    text-align: left;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 2fr 1fr 1fr;
+    gap: 5px;
+    padding: 5px 0;
     border-bottom: 1px solid #ccc;
-    max-width: 600px;
-    overflow-wrap: break-word;
 }
 
-.log-header p {
+.log-header {
     font-weight: bold;
     background-color: #f3f3f3;
-    height: 30px;
     position: sticky;
     top: 0;
+}
+
+.log-row > div,
+.log-header > div {
+    padding: 5px;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    hyphens: auto;
+    min-width: 0;
+}
+
+.log-row > div {
+    white-space: pre-wrap;
+}
+
+.json-content {
+    max-height: 100px;
+    overflow-y: auto;
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+}
+
+.json-content pre {
+    margin: 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.show-more {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 2px 5px;
+    margin-top: 5px;
+    font-size: 0.9em;
+}
+
+#filterContainer,
+#uuidSelectContainer {
+    margin-top: 20px;
 }
 
 #dropZone {
@@ -69,42 +92,12 @@ body {
     color: #000;
 }
 
-#fileNameDisplay,
-#uuidCountDisplay {
-    margin-top: 10px;
-    display: block;
-}
-
-#filterContainer {
+#fileInfo {
     margin-top: 20px;
-    display: flex;
-    align-items: center;
 }
 
-#logLevelSelect {
+#logLevelSelect,
+#uuidSelect {
     margin-left: 10px;
     padding: 5px;
-}
-
-#uuidSelect {
-    margin-top: 10px;
-    padding: 5px;
-}
-
-.json-cell {
-    cursor: pointer;
-}
-
-.json-cell.expanded pre {
-    white-space: pre-wrap;
-}
-
-.show-more {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    cursor: pointer;
-    padding: 2px 5px;
-    margin-left: 5px;
-    font-size: 0.9em;
 }

@@ -1,21 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Log File Viewer</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Log Viewer</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
-    <div id="dropZone">
-        Drag and drop your log file here or click to select a file.
-    </div>
+    <h1>Log Viewer</h1>
 
     <input type="file" id="logFileInput" style="display: none;">
+    <div id="dropZone">
+        Drag and drop your log file here or click to select a file
+    </div>
 
-    <p>Selected file: <span id="fileName"></span></p>
-
-    <p>Number of UUIDs: <span id="uuidCount"></span></p>
+    <div id="fileInfo">
+        <p>Selected file: <span id="fileName"></span></p>
+        <p>Number of UUIDs: <span id="uuidCount"></span></p>
+        <p>Time spent: <span id="timeSpent"></span></p>
+    </div>
 
     <div id="filterContainer">
         <label for="logLevelSelect">Filter by Log Level:</label>
@@ -30,14 +35,18 @@
         </select>
     </div>
 
-    <select id="uuidSelect">
-        <option value="">Select UUID</option>
-    </select>
+    <div id="uuidSelectContainer">
+        <label for="uuidSelect">Select UUID:</label>
+        <select id="uuidSelect">
+            <option value="">All UUIDs</option>
+        </select>
+    </div>
 
-    <p>Time spent (m:s:ms): <span id="timeValue"></span></p>
-
-    <div id="logDisplay"></div>
+    <div id="logDisplay">
+        <!-- Log entries will be dynamically inserted here -->
+    </div>
 
     <script src="script.js"></script>
 </body>
+
 </html>
