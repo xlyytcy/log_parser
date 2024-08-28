@@ -1,28 +1,43 @@
-<div id="dropZone">
-    Drag and drop your log file here or click to select a file.
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log File Viewer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="dropZone">
+        Drag and drop your log file here or click to select a file.
+    </div>
 
-<p>Selected file: <span id="fileName"></span></p>
+    <input type="file" id="logFileInput" style="display: none;">
 
-<p>Number of UUIDs: <span id="uuidCount"></span></p>
+    <p>Selected file: <span id="fileName"></span></p>
 
-<div id="filterContainer">
-    <label for="logLevelSelect">Filter by Log Level:</label>
-    <select id="logLevelSelect">
-        <option value="">All Levels</option>
-        <option value="trace">Trace</option>
-        <option value="debug">Debug</option>
-        <option value="info">Info</option>
-        <option value="warn">Warn</option>
-        <option value="err">Error</option>
-        <option value="critical">Critical</option>
+    <p>Number of UUIDs: <span id="uuidCount"></span></p>
+
+    <div id="filterContainer">
+        <label for="logLevelSelect">Filter by Log Level:</label>
+        <select id="logLevelSelect">
+            <option value="">All Levels</option>
+            <option value="trace">Trace</option>
+            <option value="debug">Debug</option>
+            <option value="info">Info</option>
+            <option value="warn">Warn</option>
+            <option value="err">Error</option>
+            <option value="critical">Critical</option>
+        </select>
+    </div>
+
+    <select id="uuidSelect">
+        <option value="">Select UUID</option>
     </select>
-</div>
 
-<select id="uuidSelect">
-    <option value="">Select UUID</option>
-</select>
+    <p>Time spent (m:s:ms): <span id="timeValue"></span></p>
 
-<p>Time spent (m:s:ms): <span id="timeValue"></span></p>
+    <div id="logDisplay"></div>
 
-<div id="logDisplay"></div>
+    <script src="script.js"></script>
+</body>
+</html>
