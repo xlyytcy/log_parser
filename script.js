@@ -77,7 +77,7 @@ function displayLogLines() {
     const display = document.getElementById('logDisplay');
     display.innerHTML = ''; // Clear previous display
     createLogHeader(display); // Add header row
-    
+
     const fragment = document.createDocumentFragment();
     const visibleLines = 100; // Adjust based on your needs
 
@@ -101,6 +101,20 @@ function displayLogLines() {
     });
 }
 
+function toggleLongTextExpand(cell, fullText) {
+    if (cell.classList.contains('expanded')) {
+        const truncatedContent = fullText.substring(0, 200) + '...';
+        cell.innerHTML = `${truncatedContent} <button class="show-more">Show More</button>`;
+        cell.querySelector('.show-more').addEventListener('click', () => toggleLongTextExpand(cell, fullText));
+    } else {
+        cell.textContent = fullText;
+        cell.innerHTML += ' <button class="show-less">Show Less</button>';
+        cell.querySelector('.show-less').addEventListener('click', () => toggleLongTextExpand(cell, fullText));
+    }
+    cell.classList.toggle('expanded');
+}
+
+
 function createLogRow(line) {
     const parts = line.split('|');
     const row = document.createElement('div');
@@ -110,13 +124,23 @@ function createLogRow(line) {
         let content = part.trim();
         cell.style.color = getColorForLogLevel(parts[1].trim());
 
-        if (index === 3 && content.startsWith('Stringified input: ')) {
-            content = content.replace('Stringified input: ', '');
-            if (isJsonString(content) && content.length > 100) {
-                cell.innerHTML = `Stringified input: ${content.substring(0, 100)}... <button class="show-more">Show More</button>`;
-                cell.querySelector('.show-more').addEventListener('click', () => toggleJsonExpand(cell, content));
+        if (index === 3) { // Message column
+            if (content.startsWith('Stringified input: ')) {
+                content = content.replace('Stringified input: ', '');
+                if (isJsonString(content)) {
+                    const truncatedContent = content.length > 100 ? content.substring(0, 100) + '...' : content;
+                    cell.innerHTML = `Stringified input: ${truncatedContent} <button class="show-more">Show More</button>`;
+                    cell.querySelector('.show-more').addEventListener('click', () => toggleJsonExpand(cell, content));
+                } else {
+                    cell.textContent = "Stringified input: " + content;
+                }
+            } else if (content.length > 200) {
+                // For long non-JSON strings, truncate and add a "Show More" button
+                const truncatedContent = content.substring(0, 200) + '...';
+                cell.innerHTML = `${truncatedContent} <button class="show-more">Show More</button>`;
+                cell.querySelector('.show-more').addEventListener('click', () => toggleLongTextExpand(cell, content));
             } else {
-                cell.textContent = "Stringified input: " + content;
+                cell.textContent = content;
             }
         } else {
             cell.textContent = content;
@@ -126,7 +150,6 @@ function createLogRow(line) {
     });
     return row;
 }
-
 
 function toggleJsonExpand(cell, jsonString) {
     if (cell.classList.contains('expanded')) {

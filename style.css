@@ -16,14 +16,8 @@ body {
     height: calc(90vh - 200px);
     overflow-y: auto;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 2fr 1fr 1fr;
+    grid-template-columns: minmax(120px, 1fr) minmax(60px, 1fr) minmax(100px, 1fr) 3fr minmax(100px, 1fr) minmax(100px, 1fr);
     grid-gap: 1px;
-}
-
-@media (max-width: 600px) {
-    #logDisplay {
-        grid-template-columns: 1fr 1fr 1fr 2fr 1fr 1fr;
-    }
 }
 
 .log-header,
@@ -37,16 +31,34 @@ body {
     padding: 5px;
     text-align: left;
     border-bottom: 1px solid #ccc;
-    max-width: 600px;
     overflow-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+    white-space: pre-wrap;
+    max-height: 200px;
+    overflow-y: auto;
 }
 
 .log-header p {
     font-weight: bold;
     background-color: #f3f3f3;
-    height: 30px;
     position: sticky;
     top: 0;
+    z-index: 1;
+}
+
+.log-row p {
+    background-color: #fff;
+    min-height: 1.2em;
+}
+
+.json-content,
+.log-row p.expanded {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    max-width: 100%;
+    overflow-x: auto;
+    max-height: none;
 }
 
 #dropZone {
@@ -99,7 +111,8 @@ body {
     white-space: pre-wrap;
 }
 
-.show-more {
+.show-more,
+.show-less {
     background-color: #4CAF50;
     color: white;
     border: none;
@@ -107,4 +120,48 @@ body {
     padding: 2px 5px;
     margin-left: 5px;
     font-size: 0.9em;
+}
+
+.show-less {
+    background-color: #f44336;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+    #logDisplay {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .log-header p,
+    .log-row p {
+        font-size: 0.9em;
+    }
+}
+
+/* Ensure the file input is hidden */
+#logFileInput {
+    display: none;
+}
+
+/* Style for the time spent display */
+#timeSpent {
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* Additional styles for better readability */
+#fileName,
+#uuidCount,
+#timeValue {
+    font-weight: bold;
+    color: #333;
+}
+
+/* Improve button styles */
+button {
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    opacity: 0.8;
 }
